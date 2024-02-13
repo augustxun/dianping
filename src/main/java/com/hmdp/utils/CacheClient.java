@@ -14,8 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static com.hmdp.utils.RedisConstants.CACHE_NULL_TTL;
-import static com.hmdp.utils.RedisConstants.LOCK_SHOP_TTL;
+import static com.hmdp.utils.RedisConstants.*;
 
 @Component
 @Slf4j
@@ -30,6 +29,14 @@ public class CacheClient {
         stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(value), time, unit);
     }
 
+    /**
+     * 基于逻辑过期存入缓存
+     *
+     * @param key
+     * @param value
+     * @param time
+     * @param unit
+     */
     public void setWithLogicExpire(String key, Object value, Long time, TimeUnit unit) {
         // 设置逻辑过期
         RedisData redisData = new RedisData();
@@ -39,32 +46,33 @@ public class CacheClient {
     }
 
     /**
-     * 用空值解决缓存穿透的问题
+     * 基于空值解决缓存穿透的问题
+     *
      * @param keyPrefix
      * @param id
      * @param type
      * @param dbFallback
      * @param time
      * @param unit
-     * @return
      * @param <T>
      * @param <ID>
+     * @return
      */
     public <T, ID> T queryWithPassThrough(String keyPrefix, ID id, Class<T> type, Function<ID, T> dbFallback, Long time, TimeUnit unit) {
         String key = keyPrefix + id;
         // 1.从Redis查询商户缓存
         String json = stringRedisTemplate.opsForValue().get(key);
         // 2. 判断是否存在
-        if (StrUtil.isNotBlank(json)) {
-            //3. 存在，直接返回
+        if (StrUtil.isNotBlank(json)) {// 判断是否为 NULL 或空格
+            // 3.命中缓存, 直接返回结果
             return JSONUtil.toBean(json, type);
         }
         // 判断命中的是否是空值
-        if ("".equals(json)) { // 这种写法和 if (shopJson != null) 一样的
-            // 返回一个错误信息
+        if ("".equals(json)) {
+            // 返回一个错误信息,
             return null;
         }
-        // 4. 不存在，根据id查询数据库
+        // 4. 缓存不存在，根据id查询数据库
         T result = dbFallback.apply(id);
         // 5. 如果数据库也不存在，将空值写入Redis
         if (result == null) {
@@ -80,59 +88,53 @@ public class CacheClient {
     private static final ExecutorService CACHE_REBUILD_EXECUTORS = Executors.newFixedThreadPool(10);
 
     /**
-     * 用逻辑过期解决缓存击穿问题
+     * 基于逻辑过期解决缓存击穿问题
+     *
      * @param keyPrefix
      * @param id
      * @param type
      * @param dbFallback
      * @param time
      * @param unit
-     * @return
      * @param <T>
      * @param <ID>
+     * @return
      */
-    public <T, ID> T queryWithLogicExpire(String keyPrefix,
-                                          ID id,
-                                          Class<T> type,
-                                          Function<ID, T> dbFallback,
-                                          Long time,
-                                          TimeUnit unit) {
+    public <T, ID> T queryWithLogicExpire(String keyPrefix, ID id, Class<T> type, Function<ID, T> dbFallback, Long time, TimeUnit unit) {
         String key = keyPrefix + id;
         // 1.从Redis查询商户缓存
-        String shopJson = stringRedisTemplate.opsForValue().get(key);
-        // 2. 判断是否存在
-        if (StrUtil.isBlank(shopJson)) {
-            //3. 不命中，直接返回null
+        String json = stringRedisTemplate.opsForValue().get(key);
+        // 2. 判断是否命中缓存
+        if (StrUtil.isBlank(json)) {
+            // 不命中，直接返回空值
             return null;
         }
-        // 4. 命中，需要先把json反序列化为对象
-        RedisData redisData = JSONUtil.toBean(shopJson, RedisData.class);
+        // 3. 命中，将 json 反序列化为对象
+        RedisData redisData = JSONUtil.toBean(json, RedisData.class);
         T result = JSONUtil.toBean((JSONObject) redisData.getData(), type);
         LocalDateTime expireTime = redisData.getExpireTime();
-        // 5. 判断缓存是否过期
-        if (expireTime.isAfter(LocalDateTime.now())) {
-            // 5.1 未过期，直接返回店铺信息
+        // 4. 判断缓存是否过期
+        if (!expireTime.isAfter(LocalDateTime.now())) {
+            // 4.1 未过期，直接返回店铺信息
             return result;
         }
-        // 5.2 已过期，需要缓存重建
-        // 6. 缓存重建
-        // 6.1 获取互斥锁
-        String lockKey = RedisConstants.LOCK_SHOP_KEY + id;
-        boolean isLock = trylock(lockKey);
-        // 6.2 判断是否获取锁成功
+        // 4.2 已过期，需要缓存重建
+        // 5. 缓存重建
+        // 5.1 获取互斥锁
+        String lockKey = LOCK_SHOP_KEY + id;
+        boolean isLock = trylock(key);
+        // 5.2 判断是否获取锁成功
         if (isLock) {
             // 6.3 成功，开启独立线程，异步重建
             CACHE_REBUILD_EXECUTORS.submit(() -> {
-                try {
-                    // 查询数据库
-                    T newData = dbFallback.apply(id);
-                    // 写入Redis
-                    this.setWithLogicExpire(key, newData, time, unit);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }finally{
-                    unlock(lockKey);
+                // 查询数据库
+                T newData = dbFallback.apply(id);
+                if (newData == null) {
+                    stringRedisTemplate.opsForValue().set(key, "", time, unit);
+                    return;
                 }
+                // 写入Redis
+                this.setWithLogicExpire(key, newData, time, unit);
             });
         }
         // 6.4 返回过期的商铺信息
@@ -141,6 +143,7 @@ public class CacheClient {
 
     /**
      * 加互斥锁
+     *
      * @param key
      * @return
      */
@@ -152,6 +155,7 @@ public class CacheClient {
 
     /**
      * 释放锁
+     *
      * @param key
      */
     private void unlock(String key) {
