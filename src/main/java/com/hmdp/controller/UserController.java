@@ -1,10 +1,10 @@
 package com.hmdp.controller;
 
 
-import com.hmdp.dto.LoginFormDTO;
-import com.hmdp.dto.Result;
-import com.hmdp.dto.UserDTO;
-import com.hmdp.entity.UserInfo;
+import com.hmdp.model.dto.LoginFormDTO;
+import com.hmdp.common.Result;
+import com.hmdp.model.dto.UserDTO;
+import com.hmdp.model.entity.UserInfo;
 import com.hmdp.service.IUserInfoService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.UserHolder;
