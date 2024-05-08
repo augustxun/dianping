@@ -5,14 +5,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmdp.common.Result;
-import com.hmdp.model.dto.UserDTO;
+import com.hmdp.model.vo.UserVO;
 import com.hmdp.model.entity.Blog;
 import com.hmdp.model.entity.User;
 import com.hmdp.mapper.BlogMapper;
 import com.hmdp.service.IBlogService;
 import com.hmdp.service.IUserService;
-import com.hmdp.utils.RedisConstants;
-import com.hmdp.utils.SystemConstants;
+import com.hmdp.constant.RedisConstants;
+import com.hmdp.constant.SystemConstants;
 import com.hmdp.utils.UserHolder;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -51,8 +51,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     }
 
     private void isBlogLiked(Blog blog) {
-        UserDTO userDTO = UserHolder.getUser();
-        if (userDTO == null) {
+        UserVO userVO = UserHolder.getUser();
+        if (userVO == null) {
             // 用户已登陆，无需查询是否点赞
             return;
         }
@@ -119,14 +119,14 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         List<Long> ids = top5.stream().map(Long::valueOf).collect(Collectors.toList());
         // 3. 根据用户 id 查询用户 WHERE id in (5, 1) ORDER BY FIELD(id, 5, 1)
         String idStr = StrUtil.join(",", ids);
-        List<UserDTO> userDTOS = userService.query()
+        List<UserVO> userVOS = userService.query()
                 .in("id", ids).last("ORDER BY FIELD(id," + idStr + ")").list()
                 .stream()
-                .map(user -> BeanUtil.copyProperties(user, UserDTO.class))
+                .map(user -> BeanUtil.copyProperties(user, UserVO.class))
                 .collect(Collectors.toList());
 
         // 返回
-        return Result.ok(userDTOS);
+        return Result.ok(userVOS);
     }
 
     private void queryBlogUser(Blog blog) {

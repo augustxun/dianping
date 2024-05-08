@@ -4,10 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hmdp.model.dto.LoginFormDTO;
+import com.hmdp.constant.dto.LoginFormDTO;
 import com.hmdp.common.Result;
-import com.hmdp.model.dto.UserDTO;
+import com.hmdp.model.vo.UserVO;
 import com.hmdp.model.entity.User;
 import com.hmdp.mapper.UserMapper;
 import com.hmdp.service.IUserService;
@@ -22,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.hmdp.utils.RedisConstants.*;
-import static com.hmdp.utils.SystemConstants.USER_NICK_NAME_PREFIX;
+import static com.hmdp.constant.RedisConstants.*;
+import static com.hmdp.constant.SystemConstants.USER_NICK_NAME_PREFIX;
 
 /**
  * <p>
@@ -82,8 +83,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 3.验证码不一致
             return Result.fail("验证码错误");
         }
-        // 4.根据手机号查询用户 select * from tb_user where phone = ?
-        User user = query().eq("phone", phone).one();
+        // 4.根据手机号查询用户
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getPhone, phone);
+        User user = this.getOne(lambdaQueryWrapper);
         // 5.判断用户是否存在
         if (user == null) {
             // 6.不存在，创建新用户并保存
@@ -92,9 +95,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 7.保存用户信息到Redis中去
         // 7.1 生成token作为登陆令牌
         String token = UUID.randomUUID().toString(true);
-        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class); // 复制
+        UserVO userVO = BeanUtil.copyProperties(user, UserVO.class); // 复制
         // 7.2 将User对象作为Hash存储
-        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
+        Map<String, Object> userMap = BeanUtil.beanToMap(userVO, new HashMap<>(),
                 CopyOptions.create()
                         .setIgnoreNullValue(true)
                         .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));

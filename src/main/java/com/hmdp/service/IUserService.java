@@ -1,7 +1,7 @@
 package com.hmdp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hmdp.model.dto.LoginFormDTO;
+import com.hmdp.constant.dto.LoginFormDTO;
 import com.hmdp.common.Result;
 import com.hmdp.model.entity.User;
 

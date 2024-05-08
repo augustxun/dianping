@@ -1,9 +1,9 @@
-package com.hmdp.model.dto;
+package com.hmdp.model.vo;
 
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class UserVO {
     private Long id;
     private String nickName;
     private String icon;

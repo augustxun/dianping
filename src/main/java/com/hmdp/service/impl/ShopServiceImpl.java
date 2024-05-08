@@ -17,8 +17,8 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-import static com.hmdp.utils.RedisConstants.CACHE_SHOP_KEY;
-import static com.hmdp.utils.RedisConstants.CACHE_SHOP_TTL;
+import static com.hmdp.constant.RedisConstants.CACHE_SHOP_KEY;
+import static com.hmdp.constant.RedisConstants.CACHE_SHOP_TTL;
 
 /**
  * <p>

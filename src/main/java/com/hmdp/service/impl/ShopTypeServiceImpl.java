@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hmdp.utils.RedisConstants.CACHE_SHOP_TYPE_KEY;
+import static com.hmdp.constant.RedisConstants.CACHE_SHOP_TYPE_KEY;
 
 /**
  * <p>
