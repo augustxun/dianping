@@ -3,6 +3,7 @@ package com.hmdp.controller;
 
 import com.hmdp.common.Result;
 import com.hmdp.service.IVoucherOrderService;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/voucher-order")
+@Api(tags = "优惠券订单管理")
 public class VoucherOrderController {
     @Resource
     private IVoucherOrderService voucherOrderService;

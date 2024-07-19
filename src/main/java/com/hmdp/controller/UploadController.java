@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.hmdp.common.Result;
 import com.hmdp.constant.SystemConstants;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("upload")
+@Api(tags = "上传管理")
 public class UploadController {
 
     @PostMapping("blog")

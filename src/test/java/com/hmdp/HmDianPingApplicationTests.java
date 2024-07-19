@@ -4,7 +4,7 @@ import com.hmdp.service.impl.ShopServiceImpl;
 import com.hmdp.utils.RedisIdWorker;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import javax.annotation.Resource;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +54,19 @@ class HmDianPingApplicationTests {
             throw new RuntimeException(e);
         }
     }
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
-
+    /**
+     * 测试消息发布
+     */
+    @Test
+    void testMQService() {
+        // 队列名称
+        String queueName = "simple.queue";
+        // 消息
+        String message = "hello, spring amqp!";
+        // 发送消息
+        rabbitTemplate.convertAndSend(queueName, message);
+    }
 }

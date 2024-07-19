@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit;
 import static com.hmdp.constant.RedisConstants.LOGIN_USER_KEY;
 import static com.hmdp.constant.RedisConstants.LOGIN_USER_TTL;
 
+/**
+ * 第一层拦截器：拦截一切路径，如果是登录态的用户，可以把token状态刷新
+ */
 public class RefreshTokenInterceptor implements HandlerInterceptor {
     StringRedisTemplate stringRedisTemplate;
 

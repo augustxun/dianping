@@ -1,13 +1,17 @@
 package com.hmdp.controller;
 
 
-import com.hmdp.constant.dto.LoginFormDTO;
+import cn.hutool.core.bean.BeanUtil;
 import com.hmdp.common.Result;
-import com.hmdp.model.vo.UserVO;
+import com.hmdp.constant.dto.LoginFormDTO;
+import com.hmdp.model.dto.UserDTO;
+import com.hmdp.model.entity.User;
 import com.hmdp.model.entity.UserInfo;
+import com.hmdp.model.vo.UserVO;
 import com.hmdp.service.IUserInfoService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.UserHolder;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +28,7 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @RestController
 @RequestMapping("/user")
+@Api(tags = "用户管理")
 public class UserController {
 
     @Resource
@@ -53,16 +58,19 @@ public class UserController {
 
     /**
      * 登出功能
-     * @return 无
+     * @return
      */
     @PostMapping("/logout")
     public Result logout(){
         return Result.ok("退出成功");
     }
 
+    /**
+     * 获取当前登录的用户并返回
+     * @return
+     */
     @GetMapping("/me")
     public Result me(){
-        // 获取当前登录的用户并返回
         UserVO user = UserHolder.getUser();
         return Result.ok(user);
     }
@@ -79,5 +87,40 @@ public class UserController {
         info.setUpdateTime(null);
         // 返回
         return Result.ok(info);
+    }
+
+    /**
+     * 根据id查询用户
+     * @param userId
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Result queryUserById(@PathVariable("id") Long userId){
+        // 查询详情
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.ok();
+        }
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        // 返回
+        return Result.ok(userDTO);
+    }
+
+    /**
+     * 用户签到
+     * @return
+     */
+    @PostMapping("/sign")
+    public Result sign(){
+        return userService.sign();
+    }
+
+    /**
+     * 签到统计
+     * @return
+     */
+    @GetMapping("/sign/count")
+    public Result signCount(){
+        return userService.signCount();
     }
 }

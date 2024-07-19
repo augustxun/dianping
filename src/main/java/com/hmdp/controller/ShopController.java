@@ -7,6 +7,7 @@ import com.hmdp.common.Result;
 import com.hmdp.model.entity.Shop;
 import com.hmdp.service.IShopService;
 import com.hmdp.constant.SystemConstants;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/shop")
+@Api(tags = "商户管理")
 public class ShopController {
 
     @Resource

@@ -1,8 +1,13 @@
 server:
   port: 8081
 spring:
+  rabbitmq:
+    host: localhost # 主机名
+    port: 5672 # 端口
+    username: dianping # 用户名
+    password: 123456 # 密码
   application:
-    name: hmdp
+    name: dianping
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/hmdp?useSSL=false&serverTimezone=UTC

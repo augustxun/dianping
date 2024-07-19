@@ -4,6 +4,7 @@ package com.hmdp.controller;
 import com.hmdp.common.Result;
 import com.hmdp.model.entity.Voucher;
 import com.hmdp.service.IVoucherService;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/voucher")
+@Api(tags = "优惠券管理")
 public class VoucherController {
 
     @Resource
