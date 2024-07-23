@@ -16,24 +16,22 @@ import static com.hmdp.constant.RedisConstants.LOGIN_USER_KEY;
 import static com.hmdp.constant.RedisConstants.LOGIN_USER_TTL;
 
 /**
- * 第一层拦截器：拦截一切路径，如果是登录态的用户，可以把token状态刷新
+ * 第一层拦截器：拦截一切路径，如果是登录态的用户，可以把 token 状态刷新
  */
 public class RefreshTokenInterceptor implements HandlerInterceptor {
     StringRedisTemplate stringRedisTemplate;
-
     public RefreshTokenInterceptor(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
     }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 1. 获取请求头中的token
+        // 1. 获取请求头中的 token
         String token = request.getHeader("authorization");
         if (StrUtil.isBlank(token)) {
-            // 不存在token
+            // 不存在 token
             return true;
         }
-        // 2. 基于token获取Redis中的用户
+        // 2. 基于 token 获取Redis中的用户
         String tokenKey = LOGIN_USER_KEY + token;
         Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(tokenKey);
         // 3. 判断用户是否存在

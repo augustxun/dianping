@@ -4,6 +4,7 @@ spring:
   rabbitmq:
     host: localhost # 主机名
     port: 5672 # 端口
+    virtual-host: /dianping # 虚拟主机
     username: dianping # 用户名
     password: 123456 # 密码
   application:

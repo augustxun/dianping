@@ -57,16 +57,4 @@ class HmDianPingApplicationTests {
     @Resource
     private RabbitTemplate rabbitTemplate;
 
-    /**
-     * 测试消息发布
-     */
-    @Test
-    void testMQService() {
-        // 队列名称
-        String queueName = "simple.queue";
-        // 消息
-        String message = "hello, spring amqp!";
-        // 发送消息
-        rabbitTemplate.convertAndSend(queueName, message);
-    }
 }
