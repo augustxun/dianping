@@ -1,6 +1,10 @@
 server:
   port: 8081
 spring:
+#  security:
+#    user:
+#      name: admin #账号
+#      password: 123456  #密码
   rabbitmq:
     host: localhost # 主机名
     port: 5672 # 端口
@@ -30,4 +34,4 @@ mybatis-plus:
   type-aliases-package: com.hmdp.entity # 别名扫描包
 logging:
   level:
-    com.hmdp: debug
+    com.dp: debug
