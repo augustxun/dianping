@@ -6,7 +6,6 @@ import com.dp.redis.RedisService;
 import com.dp.service.ISeckillVoucherService;
 import com.dp.service.IVoucherOrderService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,7 +23,7 @@ public class MQReceiver {
     @Resource
     private RedisService redisService;
 
-    @RabbitListener(queues = MQConfig.SECKILL_QUEUE)
+//    @RabbitListener(queues = MQConfig.SECKILL_QUEUE)
     public void listenSeckillMsg(String msg) {
         System.out.println("消费者接收到 seckill.queue 的消息：" + msg);
         VoucherOrder voucherOrder = JSONUtil.toBean(msg, VoucherOrder.class);
