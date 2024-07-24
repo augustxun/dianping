@@ -1,7 +1,7 @@
 package com.dp;
 
 import com.dp.service.impl.ShopServiceImpl;
-import com.dp.utils.RedisIdWorker;
+import com.dp.redis.RedisService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,7 +16,7 @@ class HmDianPingApplicationTests {
     private ShopServiceImpl shopService;
 
     @Resource
-    private RedisIdWorker redisIdWorker;
+    private RedisService redisIdWorker;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(500);
 
