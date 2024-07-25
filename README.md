@@ -79,13 +79,13 @@ update goods set num = num - 1 WHERE id = 1001 and num > 0
 
 普通秒杀
 
-![image-20240724234029773](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234029773.png?token=A5C5EVGFF6O3ZFTIF6BD5C3GUHKR2)
+![image-20240725161242475](https://i.imgur.com/GCFmc9J.png)
 
 优化锁，秒杀（保证一人一单） 下单
 
-![image-20240724234155683](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234155683.png?token=A5C5EVGI3SWL4IEM35DFILTGUHKSC)
+![image-20240725161002465](https://i.imgur.com/CQGay1N.png)
 
 三级缓冲方案
 
-![image-20240724234317450](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234317450.png?token=A5C5EVCID5UJ62Q6TJZNJM3GUHKSI)
+![image-20240725160524181](/Users/augustxun/projects/dianping/assets/image-20240725160524181.png)
 
