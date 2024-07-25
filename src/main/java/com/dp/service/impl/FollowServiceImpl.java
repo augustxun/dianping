@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dp.common.Result;
 import com.dp.mapper.FollowMapper;
-import com.dp.model.dto.UserDTO;
 import com.dp.model.entity.Follow;
+import com.dp.model.vo.UserVO;
 import com.dp.service.IFollowService;
 import com.dp.service.IUserService;
 import com.dp.utils.UserHolder;
@@ -88,9 +88,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         // 3.解析id集合
         List<Long> ids = intersect.stream().map(Long::valueOf).collect(Collectors.toList());
         // 4.查询用户
-        List<UserDTO> users = userService.listByIds(ids)
+        List<UserVO> users = userService.listByIds(ids)
                 .stream()
-                .map(user -> BeanUtil.copyProperties(user, UserDTO.class))
+                .map(user -> BeanUtil.copyProperties(user, UserVO.class))
                 .collect(Collectors.toList());
         return Result.ok(users);
     }

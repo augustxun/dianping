@@ -12,6 +12,7 @@ local orderKey = 'seckill:order:' .. userId
 -- 3.1 判断库存是否充足
 if (tonumber(redis.call('get', stockKey)) <= 0) then
     -- 3.2 库存不足，返回1
+
     return 1
 end
 -- 3.3 判断用户是否下单

@@ -4,7 +4,6 @@ package com.dp.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.dp.common.Result;
 import com.dp.constant.dto.LoginFormDTO;
-import com.dp.model.dto.UserDTO;
 import com.dp.model.entity.User;
 import com.dp.model.entity.UserInfo;
 import com.dp.model.vo.UserVO;
@@ -12,11 +11,11 @@ import com.dp.service.IUserInfoService;
 import com.dp.service.IUserService;
 import com.dp.utils.UserHolder;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -41,9 +40,9 @@ public class UserController {
      * 发送手机验证码
      */
     @PostMapping("/code")
-    public Result sendCode(@RequestParam("phone") String phone, HttpSession session) {
-        // 发送短信验证码并保存验证码
-        return userService.sendCode(phone, session);
+    @ApiOperation(value = "发送验证码")
+    public Result sendCode(@RequestParam("phone") String phone) {
+        return userService.sendCode(phone);
     }
 
     /**
@@ -51,9 +50,9 @@ public class UserController {
      * @param loginForm 登录参数，包含手机号、验证码；或者手机号、密码
      */
     @PostMapping("/login")
-    public Result login(@RequestBody LoginFormDTO loginForm, HttpSession session){
+    public Result login(@RequestBody LoginFormDTO loginForm){
         // 实现登录功能
-        return userService.login(loginForm, session);
+        return userService.login(loginForm);
     }
 
     /**
@@ -90,7 +89,7 @@ public class UserController {
     }
 
     /**
-     * 根据id查询用户
+     * 根据 id 查询用户
      * @param userId
      * @return
      */
@@ -101,9 +100,9 @@ public class UserController {
         if (user == null) {
             return Result.ok();
         }
-        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
         // 返回
-        return Result.ok(userDTO);
+        return Result.ok(userVO);
     }
 
     /**

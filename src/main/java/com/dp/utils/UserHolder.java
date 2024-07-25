@@ -1,15 +1,16 @@
 package com.dp.utils;
 
+
 import com.dp.model.vo.UserVO;
 
 public class UserHolder {
     private static final ThreadLocal<UserVO> tl = new ThreadLocal<>();
 
-    public static void saveUser(UserVO user){
+    public static void setUser(UserVO user){
         tl.set(user);
     }
 
-    public static UserVO  getUser(){
+    public static UserVO getUser(){
         return tl.get();
     }
 

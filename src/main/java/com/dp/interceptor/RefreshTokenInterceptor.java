@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.dp.model.vo.UserVO;
 import com.dp.utils.UserHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -18,10 +19,11 @@ import static com.dp.constant.RedisConstants.LOGIN_USER_TTL;
 /**
  * 第一层拦截器：拦截一切路径，如果是登录态的用户，可以把 token 状态刷新
  */
+@Slf4j
 public class RefreshTokenInterceptor implements HandlerInterceptor {
-    StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate redisTemplate;
     public RefreshTokenInterceptor(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
+        this.redisTemplate = stringRedisTemplate;
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -31,19 +33,18 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
             // 不存在 token
             return true;
         }
-        // 2. 基于 token 获取Redis中的用户
+        // 2. 基于 token 获取 Redis 中的用户
         String tokenKey = LOGIN_USER_KEY + token;
-        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(tokenKey);
+        Map<Object, Object> userMap = redisTemplate.opsForHash().entries(tokenKey);
         // 3. 判断用户是否存在
         if (userMap.isEmpty()) {
-            // 4. 不存在，放行
             return true;
         }
-        // 6. 存在，保存用户信息到ThreadLocal
-        UserHolder.saveUser(BeanUtil.fillBeanWithMap(userMap, new UserVO(), false));
-        // 7. 刷新token有效期
-        stringRedisTemplate.expire(tokenKey, LOGIN_USER_TTL, TimeUnit.MINUTES);
-        // 8. 放行
+        // 6. 存在，保存用户信息到 ThreadLocal
+        UserVO userVO = BeanUtil.fillBeanWithMap(userMap, new UserVO(), false);
+        UserHolder.setUser(userVO);
+        // 7. 刷新 token 有效期
+        redisTemplate.expire(tokenKey, LOGIN_USER_TTL, TimeUnit.MINUTES);
         return true;
     }
     @Override

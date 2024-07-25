@@ -1,11 +1,9 @@
 package com.dp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dp.constant.dto.LoginFormDTO;
 import com.dp.common.Result;
+import com.dp.constant.dto.LoginFormDTO;
 import com.dp.model.entity.User;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -18,18 +16,16 @@ public interface IUserService extends IService<User> {
     /**
      * 发送验证码并验证
      * @param phone
-     * @param session
      * @return
      */
-    Result sendCode(String phone, HttpSession session);
+    Result sendCode(String phone);
 
     /**
      * 登陆和注册功能
      * @param loginForm
-     * @param session
      * @return
      */
-    Result login(LoginFormDTO loginForm, HttpSession session);
+    Result login(LoginFormDTO loginForm);
 
     /**
      * 用户签到

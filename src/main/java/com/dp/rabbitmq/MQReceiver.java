@@ -1,16 +1,16 @@
 package com.dp.rabbitmq;
 
 import cn.hutool.json.JSONUtil;
+import com.dp.constant.RedisConstants;
 import com.dp.model.entity.VoucherOrder;
 import com.dp.redis.RedisService;
 import com.dp.service.ISeckillVoucherService;
 import com.dp.service.IVoucherOrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-
-import static com.dp.constant.RedisConstants.SECKILL_STOCK_KEY;
 
 
 @Service
@@ -23,9 +23,9 @@ public class MQReceiver {
     @Resource
     private RedisService redisService;
 
-//    @RabbitListener(queues = MQConfig.SECKILL_QUEUE)
+    @RabbitListener(queues = MQConfig.SECKILL_QUEUE)
     public void listenSeckillMsg(String msg) {
-        System.out.println("消费者接收到 seckill.queue 的消息：" + msg);
+        log.debug("消费者消费 seckill.queue 的消息：" + msg);
         VoucherOrder voucherOrder = JSONUtil.toBean(msg, VoucherOrder.class);
         Long voucherId = voucherOrder.getVoucherId();
         // 1. 一人一单
@@ -47,7 +47,8 @@ public class MQReceiver {
                 .update();
         if (!success) {
             // 扣减失败，说明库存不足，将 redis 数据置为 0
-            String stockKey = SECKILL_STOCK_KEY + voucherId;
+            String stockKey = RedisConstants.SECKILL_STOCK_KEY + voucherId;
+
             redisService.stringRedisTemplate.opsForValue().set(stockKey, "0");
             log.error("库存不足！");
         }

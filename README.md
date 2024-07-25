@@ -72,3 +72,20 @@ update goods set num = num - 1 WHERE id = 1001 and num > 0
 3.  将请求放入异步队列（RabbitMQ）中，立即给前端返回一个值，表示正在排队中。
 4.  服务端异步队列将请求出队，出队成功的请求可以然后进行秒杀逻辑，减库存–>下订单–>写入秒杀订单，成功了就返回成功。
 5.  当后台订单创建成功之后可以通过`websocket`向用户发送一个秒杀成功通知。前端以此来判断是否秒杀成功，秒杀成功则进入秒杀订单详情，否则秒杀失败。
+
+## 性能压测
+
+秒杀系统压测要在满库存的时候进行测试，因为库存不足时，当请求数
+
+优化前，最简秒杀 QPS: 554
+
+![image-20240724234029773](/Users/augustxun/projects/dianping/assets/image-20240724234029773.png)
+
+优化锁，无缓存，无消息队列  QPS: 1194
+
+![image-20240724234155683](/Users/augustxun/projects/dianping/assets/image-20240724234155683.png)
+
+三级缓冲方案 QPS: 4050
+
+![image-20240724234317450](/Users/augustxun/projects/dianping/assets/image-20240724234317450.png)
+

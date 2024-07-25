@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 public class SeckillMessage {
-    private Long orderId;
+    private Long id;
     private Long userId;
     private Long voucherId;
 }

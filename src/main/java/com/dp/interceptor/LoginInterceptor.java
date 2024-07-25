@@ -14,12 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 如果 ThreadLocal 里面没有用户则不放行
         if (UserHolder.getUser() == null) {
-            log.info("请求:{} 不放行", request.getRequestURI());
+            log.debug("请求:{} 不放行", request.getRequestURI());
             response.setStatus(401);
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
     }
 }

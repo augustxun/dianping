@@ -23,7 +23,6 @@ public class RedisService {
     }
 
     /**
-     *
      * @param keyPrefix 业务的前缀
      * @return
      */
@@ -39,6 +38,10 @@ public class RedisService {
         return (timestamp << COUNT_BITS) | count;
     }
 
+
+    public void set(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key, value);
+    }
     public static void main(String[] args) {
         LocalDateTime time = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         long second = time.toEpochSecond(ZoneOffset.UTC);

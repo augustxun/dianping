@@ -28,13 +28,13 @@ public class VoucherOrderController {
     private IVoucherOrderService voucherOrderService;
 
     // 基于令牌桶算法限流
-     private RateLimiter rateLimiter = RateLimiter.create(10);
+     private RateLimiter rateLimiter = RateLimiter.create(10000);
 
     @PostMapping("seckill/{id}")
     public Result seckillVoucher(@PathVariable("id") Long voucherId) {
         if (!rateLimiter.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
             return Result.fail("访问高峰期，请稍等！");
         }
-        return voucherOrderService.seckillVoucher(voucherId);
+        return voucherOrderService.seckillVoucher1(voucherId);
     }
 }

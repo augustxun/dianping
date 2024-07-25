@@ -14,4 +14,7 @@ import com.dp.model.entity.VoucherOrder;
 public interface IVoucherOrderService extends IService<VoucherOrder> {
 
     Result seckillVoucher(Long voucherId);
+    Result seckillVoucher1(Long voucherId);
+
+    Result createVoucherOrder(Long voucherId, Long userId);
 }

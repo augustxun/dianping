@@ -15,13 +15,16 @@ public class MQConfig {
         return new TopicExchange(SECKILL_EXCHANGE);
     }
     @Bean
-    public Queue topicQueue1() {
+    public Queue topicQueue() {
         return new Queue(SECKILL_QUEUE, true);
     }
 
     // 绑定交换机和队列
     @Bean
-    public Binding topicBinding1() {
-        return BindingBuilder.bind(topicQueue1()).to(topicExchange()).with("topic.key1");
+    public Binding topicBinding() {
+        return BindingBuilder
+                .bind(topicQueue())
+                .to(topicExchange())
+                .with(SECKILL_KEY);
     }
 }
