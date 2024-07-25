@@ -79,7 +79,7 @@ update goods set num = num - 1 WHERE id = 1001 and num > 0
 
 优化前，最简秒杀 QPS: 554
 
-![image-20240724234029773](/Users/augustxun/projects/dianping/assets/image-20240724234029773.png)
+![image-20240724234029773](https://github.com/augustxun/dianping/blob/main/assets/image-20240724231314390.png)
 
 优化锁，无缓存，无消息队列  QPS: 1194
 
