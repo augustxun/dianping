@@ -77,15 +77,15 @@ update goods set num = num - 1 WHERE id = 1001 and num > 0
 
 秒杀系统压测要在满库存的时候进行测试，因为库存不足时，当请求数
 
+普通秒杀
 
-
-
+![image-20240724234029773](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234029773.png?token=A5C5EVGFF6O3ZFTIF6BD5C3GUHKR2)
 
 优化锁，秒杀（保证一人一单） 下单
 
-![image-20240724234155683](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234155683.png?token=A5C5EVB6LLWYFWKTT22OOQDGUHJZU)
+![image-20240724234155683](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234155683.png?token=A5C5EVGI3SWL4IEM35DFILTGUHKSC)
 
 三级缓冲方案
 
-
+![image-20240724234317450](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234317450.png?token=A5C5EVCID5UJ62Q6TJZNJM3GUHKSI)
 
