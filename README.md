@@ -77,15 +77,15 @@ update goods set num = num - 1 WHERE id = 1001 and num > 0
 
 秒杀系统压测要在满库存的时候进行测试，因为库存不足时，当请求数
 
-优化前，最简秒杀 QPS: 554
 
-![image-20240724234029773](https://github.com/augustxun/dianping/blob/main/assets/image-20240724231314390.png)
 
-优化锁，无缓存，无消息队列  QPS: 1194
 
-![image-20240724234155683](/Users/augustxun/projects/dianping/assets/image-20240724234155683.png)
 
-三级缓冲方案 QPS: 4050
+优化锁，秒杀（保证一人一单） 下单
 
-![image-20240724234317450](/Users/augustxun/projects/dianping/assets/image-20240724234317450.png)
+![image-20240724234155683](https://raw.githubusercontent.com/augustxun/oss/main/uPic/image-20240724234155683.png?token=A5C5EVB6LLWYFWKTT22OOQDGUHJZU)
+
+三级缓冲方案
+
+
 
