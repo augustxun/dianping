@@ -87,5 +87,5 @@ update goods set num = num - 1 WHERE id = 1001 and num > 0
 
 三级缓冲方案
 
-![image-20240725160524181](/Users/augustxun/projects/dianping/assets/image-20240725160524181.png)
+![image-20240725160524181](https://i.imgur.com/StTvNVU.png)
 
