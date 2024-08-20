@@ -7,13 +7,22 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="dianping" />
+        <module name="voucher-service" />
+        <module name="shop-service" />
+        <module name="dp-common" />
+        <module name="user-service" />
+        <module name="blog-service" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="dianping" options="-parameters" />
+      <module name="blog-service" options="-parameters" />
+      <module name="dianping" options="" />
+      <module name="dp-common" options="-parameters" />
+      <module name="shop-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
+      <module name="voucher-service" options="-parameters" />
     </option>
   </component>
 </project>
